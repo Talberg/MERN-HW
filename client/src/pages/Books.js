@@ -45,9 +45,9 @@ function Books() {
   function saveGBook(book){
     API.saveBook({
       title: book.title,
-      author: book.author,
-      synopsis: book.synopsis,
-      link: book.link
+      author: book.authors,
+      synopsis: book.description,
+      link: book.linkInfo
     })
   }
 
@@ -69,9 +69,9 @@ function Books() {
       <Container fluid>
         <Row>
           <Col size="md-6">
-            <Jumbotron>
+            
               <h1>Google Books</h1>
-            </Jumbotron>
+          
             <form>
               <Input
                 onChange={handleInputChange}
@@ -86,10 +86,8 @@ function Books() {
                 Go
               </FormBtn>
             </form>
-          </Col>
-          <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>My Books</h1>
+              <h1>Results</h1>
             </Jumbotron>
             
               <List>
@@ -105,6 +103,9 @@ function Books() {
                   </ListItem>
                 ))}
               </List>
+          </Col>
+          <Col size="md-6 sm-12">
+            
             
           </Col>
         </Row>

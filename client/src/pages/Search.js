@@ -57,21 +57,8 @@ function Books() {
     return (
       <Container fluid>
         <Row>
-          <Col size="md-6">
-            <Jumbotron>
-              <h1>Google Book Search</h1>
-            </Jumbotron>
-            <form>
-             
-              <FormBtn
-                disabled={!(formObject.author && formObject.title)}
-                onClick={handleFormSubmit}
-              >
-                Submit Book
-              </FormBtn>
-            </form>
-          </Col>
-          <Col size="md-6 sm-12">
+          
+          <Col size=" sm-12">
             <Jumbotron>
               <h1>Books On My List</h1>
             </Jumbotron>
@@ -81,7 +68,7 @@ function Books() {
                   <ListItem key={book._id}>
                     <Link to={"/books/" + book._id}>
                       <strong>
-                        {book.title} by {book.author}
+                        {book.title} by {book.authors}
                       </strong>
                     </Link>
                     <DeleteBtn onClick={() => deleteBook(book._id)} />
