@@ -6,14 +6,11 @@ import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 import { Input, TextArea, FormBtn } from "../components/Form";
-import Axios from "axios";
-import AddBtn from "../components/AddButton"
 
 function Books() {
   // Setting our component's initial state
   const [books, setBooks] = useState([])
   const [formObject, setFormObject] = useState({})
-  const [results, setResults] = useState([])
 
   // Load all books and store them with setBooks
   useEffect(() => {
@@ -42,27 +39,19 @@ function Books() {
     setFormObject({...formObject, [name]: value})
   };
 
-  function saveGBook(book){
-    API.saveBook({
-      title: book.title,
-      author: book.author,
-      synopsis: book.synopsis,
-      link: book.link
-    })
-  }
-
   // When the form is submitted, use the API.saveBook method to save the book data
   // Then reload books from the database
   function handleFormSubmit(event) {
     event.preventDefault();
-    Axios.get(`https://www.googleapis.com/books/v1/volumes?q=${formObject.search}`)
-    .then(({data}) =>{
-      console.log(data.items)
-      setResults(data.items
-        
-       )
+    if (formObject.title && formObject.author) {
+      API.saveBook({
+        title: formObject.title,
+        author: formObject.author,
+        synopsis: formObject.synopsis
+      })
+        .then(res => loadBooks())
+        .catch(err => console.log(err));
     }
-    )
   };
 
     return (
@@ -70,42 +59,38 @@ function Books() {
         <Row>
           <Col size="md-6">
             <Jumbotron>
-              <h1>Google Books</h1>
+              <h1>Google Book Search</h1>
             </Jumbotron>
             <form>
-              <Input
-                onChange={handleInputChange}
-                name="search"
-                placeholder="Search "
-              />
-            
+             
               <FormBtn
-                disabled={!(formObject.search )}
+                disabled={!(formObject.author && formObject.title)}
                 onClick={handleFormSubmit}
               >
-                Go
+                Submit Book
               </FormBtn>
             </form>
           </Col>
           <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>My Books</h1>
+              <h1>Books On My List</h1>
             </Jumbotron>
-            
+            {books.length ? (
               <List>
-                {results.map(({volumeInfo}) => (
-                  <ListItem >
-                    <a href={volumeInfo.infoLink}>
+                {books.map(book => (
+                  <ListItem key={book._id}>
+                    <Link to={"/books/" + book._id}>
                       <strong>
-                        {volumeInfo.title}
+                        {book.title} by {book.author}
                       </strong>
-                    </a>
-                    
-                    <AddBtn onClick={() => saveGBook(volumeInfo)} />
+                    </Link>
+                    <DeleteBtn onClick={() => deleteBook(book._id)} />
                   </ListItem>
                 ))}
               </List>
-            
+            ) : (
+              <h3>No Results to Display</h3>
+            )}
           </Col>
         </Row>
       </Container>
